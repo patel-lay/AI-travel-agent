@@ -1,0 +1,18 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 1
+  },
+  "mappings": {
+    "properties": {
+      "leave_date": { "type": "date", "format": "MMMM d" },
+      "return_date": { "type": "date", "format": "MMMM d" },
+      "depart_time_leg1": { "type": "keyword" },
+      "arrival_time_leg1": { "type": "keyword" },
+      "emission_avg_diff": { "type": "integer" },
+      "price": { "type": "float" },
+      "trip_type": { "type": "keyword" },
+      "access_date": { "type": "date", "format": "yyyy-MM-dd" }
+    }
+  }
+}
