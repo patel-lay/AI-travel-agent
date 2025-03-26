@@ -18,10 +18,13 @@ def extract_flight_info():
     flight_info.get_flight_info(user_input)
 
     res = Scrape(flight_info.src, flight_info.dst, flight_info.date)
-    print(res)
-    res_json = res.to_json()
+    res_json= res.to_json(orient="records", indent=4)
+    flights_data = json.loads(res_json)
+
+    print(flights_data)
+    print(type(flights_data))
     create_index()
-    insert_data(res_json)
+    insert_data(flights_data)
     res = query()
     print(res)
     return res #jsonify(res)

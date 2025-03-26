@@ -195,15 +195,14 @@ class _Scrape:
 		access_date = [date.today().strftime('%Y-%m-%d')]*len(grouped)
 		# For each "flight"
 		for g in grouped:
-			print(g)
 			i_diff = 0 # int that checks if we need to jump ahead based on some conditions
 			num_stops = 0 if 'Nonstop' in g[5 + i_diff] else int(g[5 + i_diff].split('stop')[0])
 			# if num_stops > 1:
 			# 	continue
 
 			# Get departure and arrival times
-			depart_time += [g[0]]
-			arrival_time += [g[1]]
+			depart_time += [g[0].replace("\u202f", " ")]
+			arrival_time += [g[1].replace("\u202f", " ")]
 
 			# When this string shows up we jump ahead an index
 			i_diff += 1 if 'Separate tickets booked together' in g[2] else 0

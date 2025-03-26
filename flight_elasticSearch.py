@@ -1,7 +1,16 @@
-from elasticsearch import Elasticsearch
+from elasticsearch import Elasticsearch, helpers
+
+ELASTIC_URL = "https://localhost:9200"
+CA_CERT_PATH = "/Users/laypatel/http_ca.crt"
+USERNAME = "elastic"
+PASSWORD = "e=daqTKy20DDhAjCgFMx"
 
 
-es = Elasticsearch("http://localhost:9200")
+es = Elasticsearch(
+        ELASTIC_URL,
+        ca_certs=CA_CERT_PATH,
+        basic_auth=(USERNAME, PASSWORD)
+    )
 
 index_name = "flights"
 index_mapping = {
@@ -24,12 +33,16 @@ index_mapping = {
 }
 # Paste the JSON mapping here
 def create_index():
-    es.indices.create(index=index_name, body=index_mapping)
+    if not es.indices.exists(index=index_name):
+        es.indices.create(index=index_name, body=index_mapping)
+    else:
+        print("Entry already exists")
+   
 
 def generate_bulk_data(data):
     for flight in data:
         yield {
-            "_index": INDEX_NAME,
+            "_index": index_name,
             "_source": {
                 "leave_date": flight["Leave Date"],
                 "return_date": flight.get("Return Date", None),  # Handle None values
@@ -42,7 +55,7 @@ def generate_bulk_data(data):
             }
         }
 def insert_data(flights_data):
-    try:
+    try: 
         response = helpers.bulk(es, generate_bulk_data(flights_data))
         print("Bulk insert completed:", response)
     except Exception as e:
@@ -58,7 +71,7 @@ def query():
     }
 
     # Execute search
-    response = es.search(index=INDEX_NAME, body=query)
+    response = es.search(index=index_name, body=query)
 
     # Print results
     for hit in response["hits"]["hits"]:
